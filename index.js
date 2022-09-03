@@ -15,7 +15,7 @@ app.use(cors());
 
 
 // routes
-app.use('/api/v1/users', usersRoute);
+app.use('/user', usersRoute);
 
 
 
@@ -23,6 +23,14 @@ app.use('/api/v1/users', usersRoute);
 app.get('/', (req, res) => {
     res.json({ message: 'Random User API ready' });
 })
+
+
+// validated Route 
+app.use("*", (req, res) => { 
+    res.status(404).json({ message: "Route Not Found" });
+})
+
+
 
 // listen 
 app.listen(port, () => {

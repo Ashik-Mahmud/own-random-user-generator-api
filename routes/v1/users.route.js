@@ -5,5 +5,5 @@ const router = require('express').Router();
 
 
 
-router.get('/random', userController.randomUser).get("/all", userController.allUser).post("/save", userController.saveUser);
+router.get('/random', userController.randomUser).get("/all", userController.allUser).post("/save", userController.saveUser).patch("/update/:id", userController.updateUser)
 module.exports = router

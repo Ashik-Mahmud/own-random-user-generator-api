@@ -40,14 +40,6 @@
     "photoURL": "https://randomuser.me/api/portraits/men/45.jpg"
   },
   {
-    "id": 6,
-    "name": "Yahia Kanom",
-    "gender": "male",
-    "contact": "01578548452",
-    "address": "Dhaka/Bangladesh",
-    "photoURL": "https://randomuser.me/api/portraits/men/45.jpg"
-  },
-  {
     "id": 7,
     "name": "Mahmud",
     "gender": "male",
@@ -69,22 +61,6 @@
     "gender": "male",
     "contact": "45645466545",
     "address": "Rangpur City",
-    "photoURL": "https://randomuser.me/api/portraits/men/45.jpg"
-  },
-  {
-    "id": 10,
-    "name": "Mahmud",
-    "gender": "male",
-    "contact": "45645466545",
-    "address": "Rangpur City",
-    "photoURL": "https://randomuser.me/api/portraits/men/45.jpg"
-  },
-  {
-    "id": 10,
-    "name": "Anika Rahman",
-    "gender": "female",
-    "contact": "45645466545",
-    "address": "Gobindagonj/Gaibandha",
     "photoURL": "https://randomuser.me/api/portraits/men/45.jpg"
   }
 ]

@@ -1,8 +1,6 @@
 const { MongoClient } = require("mongodb");
 require('dotenv').config();
 const connectionString = process.env.ATLAS_URI;
-console.log(connectionString);
-
 
 const client = new MongoClient(connectionString, {
   useNewUrlParser: true,
@@ -18,7 +16,7 @@ module.exports = {
         return callback(err);
       }
 
-      dbConnection = db.db("test");
+      dbConnection = db.db("users-app");
       console.log("Successfully connected to MongoDB.");
 
       return callback();

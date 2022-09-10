@@ -15,6 +15,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 
+/* MongoDB Connections */
+connectToServer((err)=>{
+    if(!err){
+       // listen 
+       app.listen(port, () => {
+           console.log(`Random Users listening at http://localhost:${port}`)
+       })
+    }else{
+       console.log(err);
+    }
+ })
+   
+   
+
 // routes
 app.use('/user', usersRoute);
 
@@ -31,18 +45,6 @@ app.use("*", (req, res) => {
     res.status(404).json({ message: "Route Not Found" });
 })
 
-
-/* MongoDB Connections */
-connectToServer((err)=>{
- if(!err){
-    // listen 
-    app.listen(port, () => {
-        console.log(`Random Users listening at http://localhost:${port}`)
-    })
- }else{
-    console.log(err);
- }
-})
 
 
 

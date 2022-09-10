@@ -1,12 +1,11 @@
-const {
-  users,
-  addingNewUser,
-  usersExceptDeletedItem,
-} = require("../../utils/FileSystem");
+const { getDb } = require("../../utils/dbConnection");
+const {usersExceptDeletedItem} = require("../../utils/FileSystem");
 
 // getting random user
-const randomUser = (req, res) => {
+const randomUser =async(req, res) => {
   try {
+    const db = getDb();
+    const users = await db.collection("users").find().toArray();
     const userLength = users.length;
     const randomUser = users[Math.floor(Math.random() * userLength)];
 
@@ -17,8 +16,10 @@ const randomUser = (req, res) => {
 };
 
 // getting all user with limit
-const allUser = (req, res) => {
+const allUser = async(req, res) => {
   try {
+    const db = getDb();
+    const users = await db.collection("users").find().toArray();
     const limit = req.query.s;
     const userLength = users.length;
 
@@ -36,30 +37,25 @@ const allUser = (req, res) => {
 };
 
 // Save User Controller
-const saveUser = (req, res) => {
+const saveUser = async (req, res) => {
   try {
     const { id, name, gender, contact, address, photoURL } = req.body;
 
     /* validations for required all the fields */
-    if (!id || !name || !gender || !contact || !address || !photoURL) {
+    if (!name || !gender || !contact || !address || !photoURL) {
       return res.send({ message: "Please provide required fields" });
     }
 
-    /* validations for id */
-    if (typeof id !== "number") {
-      return res.send({ message: "Id must be number" });
+    /*  push the new user to the user to the mongodb database  */
+    
+    const db = getDb();
+    const result  = await db.collection("users").insertOne(req.body);
+
+    if(result.acknowledged){
+        res.send({ message: "User added successfully" });
     }
-
-    /*  validation for repetitive ID */
-    const isID = users.find((user) => user.id == id);
-    if (isID) {
-      return res.send({ message: "ID already exists" });
-    }
-
-    /*  push the new user to the users array */
-    addingNewUser(req.body);
-
-    res.send({ message: "User added successfully" });
+    
+    
   } catch (error) {
     res.json({ message: error.message });
   }

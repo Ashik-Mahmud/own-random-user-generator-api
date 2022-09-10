@@ -7,6 +7,7 @@ const port = 5000;
 
 // importedRoutes 
 const usersRoute = require('./routes/v1/users.route.js');
+const { connectToServer } = require("./utils/dbConnection.js");
 
 // middleware
 app.use(express.json());
@@ -31,8 +32,17 @@ app.use("*", (req, res) => {
 })
 
 
-
-// listen 
-app.listen(port, () => {
-    console.log(`Random Users listening at http://localhost:${port}`)
+/* MongoDB Connections */
+connectToServer((err)=>{
+ if(!err){
+    // listen 
+    app.listen(port, () => {
+        console.log(`Random Users listening at http://localhost:${port}`)
+    })
+ }else{
+    console.log(err);
+ }
 })
+
+
+

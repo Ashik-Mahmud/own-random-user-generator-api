@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const { getDb } = require("../../utils/dbConnection");
 const {usersExceptDeletedItem} = require("../../utils/FileSystem");
 
@@ -62,56 +63,55 @@ const saveUser = async (req, res) => {
 };
 
 /* update user by the id */
-const updateUser = (req, res) => {
+const updateUser = async(req, res) => {
   try {
     const { id } = req.params;
-    const isHasThisUser = users.find((user) => user.id == id);
+    const db = getDb();
+    const isHasThisUser = await db.collection("users").findOne({_id: ObjectId(id)});
     if (!isHasThisUser) {
       return res.json({ message: "User not found" });
     }
-
-    const { id: newId, name, gender, contact, address, photoURL } = req.body;
-    let updatedData = users.find((user) => user.id == id);
-
-    /* validation for ID  */
-    if (newId) return res.json({ message: "You can't change ID" });
-
-    updatedData.name = name ? name : updatedData.name;
-    updatedData.gender = gender ? gender : updatedData.gender;
-    updatedData.contact = contact ? contact : updatedData.contact;
-    updatedData.address = address ? address : updatedData.address;
-    updatedData.photoURL = photoURL ? photoURL : updatedData.photoURL;
-
-    addingNewUser(updatedData);
-    res.send({ message: "User updated successfully" });
+    const options = {upsert: true}
+    const result = await db.collection("users").updateOne({_id: ObjectId(id)}, {
+        $set: req.body
+    } ,options)
+    if(result.acknowledged){
+        res.send({ message: "User updated successfully" });
+    }
   } catch (error) {
     res.json({ message: error.message });
   }
 };
 
 /* delete user by the id */
-const deleteUser = (req, res) => {
+const deleteUser = async(req, res) => {
   try {
     const { id } = req.params;
-    const isHasThisUser = users.find((user) => user.id == id);
+    const db = getDb();
+    const isHasThisUser = await db.collection("users").findOne({_id: ObjectId(id)})
     if (!isHasThisUser) return res.json({ message: "User not found" });
 
-    const usersExceptDeleted = users.filter((user) => user.id != id);
-
-    usersExceptDeletedItem(usersExceptDeleted);
-    res.send({ message: "Delete user successfully done" });
+    const result = await db.collection("users").deleteOne({_id: ObjectId(id)});
+    if(result.acknowledged){
+      res.send({ message: "Delete user successfully done" });
+    }
   } catch (error) {
     res.json({ message: error.message });
   }
 };
 
 /* bulk user delete  */
-const bulkUserDelete = (req, res) => {
+const bulkUserDelete = async(req, res) => {
   try {
+    const db = getDb();
+
     const deleteIDs = req.body;
-    const remainingItems = users.filter((user) => !deleteIDs.includes(user.id));
-    usersExceptDeletedItem(remainingItems);
-    res.send("Deleted All selection Items");
+    const deletedIDReady = deleteIDs.map(id => ObjectId(id));
+       
+    const result = await db.collection("users").deleteMany({ _id: {$in: deletedIDReady} });
+    if(result.acknowledged){
+        res.send({success: true, message: "Deleted All selection Items"});
+    }
   } catch (error) {
     res.json({ message: error.message });
   }
